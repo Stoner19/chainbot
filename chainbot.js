@@ -122,12 +122,12 @@ var getRealNameFromId = function(bot, userId) {
   return deferred.promise;
 };
 
-var getUserNameFromId = function(bot, userId) {
+var getSlackUserNameFromId = function(bot, userId) {
   var deferred = Q.defer();
-  var userName = '';
+  var slackUserName = '';
   bot.api.users.info({user: userId}, function(err, response) {
-    userName = response.user.name;
-    deferred.resolve(userName);
+    slackUserName = response.user.name;
+    deferred.resolve(slackUserName);
   });
   return deferred.promise;
 };
@@ -169,12 +169,13 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
   });
 
   var validateChannel = isValidChannelName(bot, channelName);
-  var slackName = getUserNameFromId(bot, message.user); //wanted to use userName but meh
   //var validateName = getRealNameFromId(bot, message.user).then(isValidUser, announcerWhiteList);
-  var validateID = isValidUser(message.user, announcerWhiteList);
-  var isValidated = Q.all([validateChannel, validateID]);
+  var slackUserID = message.user;
+  var validateID = isValidUser(slackUserID, announcerWhiteList);
+  var slackUserName = getslackUserNameFromId(bot, slackUserID);
+  var isValidated = Q.all([validateChannel, validateID, slackUserName]);
 
-  isValidated.spread(function(validChannel, validUser, slackName) {
+  isValidated.spread(function(validChannel, validUser, slackUserID, slackUserName) {
     if (!validUser) {
       return bot.reply(message, 'Sorry, you\'re not authenticated to post.');
     } else if (!validChannel) {
@@ -184,14 +185,14 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
       bot.startConversation(message, function(err, convo) {
         convo.say('*I\'m about to post the following:*');
         convo.say({
-          username: 'ChainBot: Dev Team Announcer',
+          slackUsername: 'ChainBot: Dev Team Announcer',
           icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
-          text: '*Posted by:* ' + slackName + ' *on* ' + theDate + '\n<!channel>',
+          text: '*Posted by:* <@' + slackUserID + '|' + slackUserName + '> *on* ' + theDate + '\n<!channel>',
           attachments: parsedMessages
 
         });
-        convo.ask(responses.confirm(bot, channelName, parsedMessages, theDate, slackName), [
-          responses.yes(bot, 'post', {channel:channelName, message:parsedMessages, date:theDate, user:slackName}),
+        convo.ask(responses.confirm(bot, channelName, parsedMessages, theDate, slackUserID, slackUserName), [
+          responses.yes(bot, 'post', {channel:channelName, message:parsedMessages, date:theDate, id:slackUserID, user:slackUserName}),
           responses.no(bot),
           responses.default()
         ]);
