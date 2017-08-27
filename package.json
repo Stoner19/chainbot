@@ -1,8 +1,8 @@
 {
-  "name": "son-of-brianwilliams",
+  "name": "chainbot",
   "version": "1.0.0",
-  "description": "Second time's a charm...right guys???",
-  "main": "brianwilliams-v2.js",
+  "description": "This bot watches over the ChainCoin slack while we sleep.",
+  "main": "chainbot.js",
   "dependencies": {
     "botkit": "0.0.15",
     "moment": "^2.12.0",
@@ -14,17 +14,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tshamz/son-of-brianwilliams.git"
+    "url": "https://github.com/alanrudolf/chainbot.git"
   },
   "keywords": [
-    "flat-screen",
-    "tvs",
-    "bow-staffs"
+    "slack",
+    "botkit",
+    "node",
+    "chaincoin"
   ],
-  "author": "tshamz",
+  "author": "alanr",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tshamz/son-of-brianwilliams/issues"
+    "url": "https://github.com/alanrudolf/chainbot/issues"
   },
-  "homepage": "https://github.com/tshamz/son-of-brianwilliams#readme"
+  "homepage": "https://github.com/alanrudolf/chainbot#readme"
 }
