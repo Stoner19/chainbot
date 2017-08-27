@@ -1,9 +1,12 @@
 // Config ===============================================
 
+var http                 = require("http");
 var Q                    = require('q');
 var moment               = require('moment');
 var Botkit               = require('botkit');
 var responses            = require('./responses.js');
+
+var herokuUrl            = process.env.HEROKU_URL;
 
 var moderatorWhiteList   = process.env.MODERATOR_USERS.split(',');
 var announcerWhiteList   = process.env.ANNOUNCER_USERS.split(',');
@@ -41,6 +44,11 @@ controller.setupWebserver(process.env.PORT, function(err, webserver) {
       res.status(500).send('ERROR: ' + err);
     } else {
       res.send('Great Success!');
+
+      //server is up, now we keep it alive ;)
+      setInterval(function() {
+          http.get(herokuUrl);
+      }, 900000); // every 15 minutes
     }
   });
 });
