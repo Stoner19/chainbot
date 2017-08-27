@@ -172,7 +172,7 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
   //var validateName = getRealNameFromId(bot, message.user).then(isValidUser, announcerWhiteList);
   var slackUserID = message.user;
   var validateID = isValidUser(slackUserID, announcerWhiteList);
-  var slackUserName = getslackUserNameFromId(bot, slackUserID);
+  var slackUserName = getSlackUserNameFromId(bot, slackUserID);
   var isValidated = Q.all([validateChannel, validateID, slackUserName]);
 
   isValidated.spread(function(validChannel, validUser, slackUserID, slackUserName) {
