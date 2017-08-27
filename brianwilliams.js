@@ -122,10 +122,18 @@ var isValidChannelName = function(bot, channelName) {
   return deferred.promise;
 };
 
-var isValidUser = function(realName) {
+/*var isValidUser = function(realName) {
   var deferred = Q.defer();
   deferred.resolve(whitelistedUsers.some(function(userName) {
     return userName === realName;
+  }));
+  return deferred.promise;
+};*/
+
+var isValidUser = function(userID) {
+  var deferred = Q.defer();
+  deferred.resolve(whitelistedUsers.some(function(validUserID) {
+    return validUserID === userID;
   }));
   return deferred.promise;
 };
@@ -149,8 +157,9 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
   });
 
   var validateChannel = isValidChannelName(bot, channelName);
-  var validateName = getRealNameFromId(bot, message.user).then(isValidUser);
-  var isValidated = Q.all([validateChannel, validateName]);
+  //var validateName = getRealNameFromId(bot, message.user).then(isValidUser);
+  var validateID = isValidUser(message.user);
+  var isValidated = Q.all([validateChannel, validateID]);
 
   isValidated.spread(function(validChannel, validUser) {
     if (!validUser) {
@@ -162,8 +171,8 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
       bot.startConversation(message, function(err, convo) {
         convo.say('*I\'m about to post the following:*');
         convo.say({
-          username: 'Brian Williams: Dev Team News Anchor',
-          icon_url: 'http://dev.tylershambora.com/images/father-williams.jpg',
+          username: 'ChainBot: Dev Team Announcer',
+          icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
           text: '<!channel>\n\n*Updates for ' + theDate + ':*',
           attachments: parsedMessages
         });
@@ -178,8 +187,9 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
 });
 
 controller.hears(['hey mister'], ['direct_message', 'mention', 'direct_mention'], function(bot, message) {
-  getRealNameFromId(bot, message.user)
-    .then(isValidUser)
+  //getRealNameFromId(bot, message.user)
+    //.then(isValidUser)
+    isValidUser(message.user)
     .then(function(result) {
       bot.reply(message, 'Hello!');
       if (result) {
