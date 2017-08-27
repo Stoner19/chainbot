@@ -23,8 +23,8 @@ module.exports = {
         if (action === 'post') {
           bot.say({
             channel: '#' + options.channel,
-            username: 'Brian Williams: Dev Team News Anchor',
-            icon_url: 'http://dev.tylershambora.com/images/father-williams.jpg',
+            username: 'ChainBot: Dev Team Announcer',
+            icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
             text: '<!channel>\n\n*Updates for ' + options.date + ':*',
             attachments: options.message
           });
