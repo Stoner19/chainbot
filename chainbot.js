@@ -259,7 +259,7 @@ controller.hears([/delete (\S+) from (\S+)/], ['direct_message'], function(bot, 
   });
 });
 
-controller.on('direct_message, mention, direct_mention', function(bot, message) {
+/*controller.on('direct_message, mention, direct_mention', function(bot, message) {
   bot.api.reactions.add({
     timestamp: message.ts,
     channel: message.channel,
@@ -271,10 +271,11 @@ controller.on('direct_message, mention, direct_mention', function(bot, message) 
       bot.reply(message, 'go with christ brah.');
     }
   });
-});
+});*/
 
 
-controller.hears([/[\s\S]*/], ['direct_message', 'direct_mention', 'mention', 'ambient'], function(bot, message) {
+controller.hears([/[\s\S]*/], ['direct_message', 'direct_mention', 'mention', 'ambient', 'user_channel_join'], function(bot, message) {
+  //can also add 'channel_leave' to remove messages when users leave channel
   if (readOnlyChannels.indexOf(message.channel) !== -1) {
     getRealNameFromId(bot, message.user).then(function(realName) {
       var options = {
