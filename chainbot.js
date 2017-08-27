@@ -5,7 +5,10 @@ var moment               = require('moment');
 var Botkit               = require('botkit');
 var responses            = require('./responses.js');
 
-var whitelistedUsers     = process.env.WHITELIST_USERS.split(',');
+var moderatorWhiteList   = process.env.MODERATOR_USERS.split(',');
+var announcerWhiteList   = process.env.ANNOUNCER_USERS.split(',');
+var fullWhiteList        = moderatorWhiteList.concat(announcerWhiteList); //meh
+
 var readOnlyChannels     = process.env.READ_ONLY_CHANNELS.split(',');
 
 
@@ -112,6 +115,16 @@ var getRealNameFromId = function(bot, userId) {
   return deferred.promise;
 };
 
+var getUserNameFromId = function(bot, userId) {
+  var deferred = Q.defer();
+  var userName = '';
+  bot.api.users.info({user: userId}, function(err, response) {
+    userName = response.user.name;
+    deferred.resolve(userName);
+  });
+  return deferred.promise;
+};
+
 var isValidChannelName = function(bot, channelName) {
   var deferred = Q.defer();
   bot.api.channels.list({}, function(err, response) {
@@ -122,17 +135,9 @@ var isValidChannelName = function(bot, channelName) {
   return deferred.promise;
 };
 
-/*var isValidUser = function(realName) {
+var isValidUser = function(userID, whiteList) {
   var deferred = Q.defer();
-  deferred.resolve(whitelistedUsers.some(function(userName) {
-    return userName === realName;
-  }));
-  return deferred.promise;
-};*/
-
-var isValidUser = function(userID) {
-  var deferred = Q.defer();
-  deferred.resolve(whitelistedUsers.some(function(validUserID) {
+  deferred.resolve(whiteList.some(function(validUserID) {
     return validUserID === userID;
   }));
   return deferred.promise;
@@ -157,11 +162,12 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
   });
 
   var validateChannel = isValidChannelName(bot, channelName);
-  //var validateName = getRealNameFromId(bot, message.user).then(isValidUser);
-  var validateID = isValidUser(message.user);
+  var slackName = getUserNameFromId(bot, message.user); //wanted to use userName but meh
+  //var validateName = getRealNameFromId(bot, message.user).then(isValidUser, announcerWhiteList);
+  var validateID = isValidUser(message.user, announcerWhiteList);
   var isValidated = Q.all([validateChannel, validateID]);
 
-  isValidated.spread(function(validChannel, validUser) {
+  isValidated.spread(function(validChannel, validUser, slackName) {
     if (!validUser) {
       return bot.reply(message, 'Sorry, you\'re not authenticated to post.');
     } else if (!validChannel) {
@@ -173,11 +179,12 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
         convo.say({
           username: 'ChainBot: Dev Team Announcer',
           icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
-          text: '<!channel>\n\n*Updates for ' + theDate + ':*',
+          text: '*Posted by:* ' + slackName + ' *on* ' + theDate + '\n<!channel>',
           attachments: parsedMessages
+
         });
-        convo.ask(responses.confirm(bot, channelName, parsedMessages, theDate), [
-          responses.yes(bot, 'post', {channel:channelName, message:parsedMessages, date:theDate}),
+        convo.ask(responses.confirm(bot, channelName, parsedMessages, theDate, slackName), [
+          responses.yes(bot, 'post', {channel:channelName, message:parsedMessages, date:theDate, user:slackName}),
           responses.no(bot),
           responses.default()
         ]);
@@ -186,7 +193,20 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
   });
 });
 
-controller.hears(['hey mister'], ['direct_message', 'mention', 'direct_mention'], function(bot, message) {
+controller.hears(['help'], ['direct_message'], function(bot, message) {
+    isValidUser(message.user, fullWhiteList)
+    .then(function(result) {
+      if (result) {
+        bot.reply(message, '*Syntax:*');
+        bot.reply(message, 'post to <channel name>');
+        bot.reply(message, '<message title>');
+        bot.reply(message, '___');
+        bot.reply(message, '<message body>');
+      }
+    });
+});
+
+/*controller.hears(['hey mister'], ['direct_message', 'mention', 'direct_mention'], function(bot, message) {
   //getRealNameFromId(bot, message.user)
     //.then(isValidUser)
     isValidUser(message.user)
@@ -196,7 +216,7 @@ controller.hears(['hey mister'], ['direct_message', 'mention', 'direct_mention']
         bot.reply(message, 'Hey! You\'re pretty valid!');
       }
     });
-});
+});*/
 
 controller.hears([/delete (\S+) from (\S+)/], ['direct_message'], function(bot, message) {
   var channelOptions = {

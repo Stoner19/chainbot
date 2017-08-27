@@ -23,10 +23,10 @@ module.exports = {
         if (action === 'post') {
           bot.say({
             channel: '#' + options.channel,
-            username: 'ChainBot: Dev Team Announcer',
+            username: 'ChainCoin Announcement',
             icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
-            text: '<!channel>\n\n*Updates for ' + options.date + ':*',
-            attachments: options.message
+            text: '*Posted by:* ' + options.user + ' *on* ' + theDate + '\n<!channel>',
+            attachments: options.message,
           });
         } else if (action === 'delete') {
           console.log(options);
