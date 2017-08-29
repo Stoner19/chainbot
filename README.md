@@ -1,7 +1,7 @@
 # chainbot.js
 
-<p align="center">
-  <img width="100%" src="https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png" />
+<p align="left">
+  <img width="20%" src="https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png" />
 </p>
 
 >chainbot is a slackbot who watches over the ChainCoin slack channel while we sleep. For now, it can turn certain Slack channels into read only channels by deleting all messages that are posted to that channel. In the future, we will add support for vote banning, moderator banning, and also allow the bot to answer questions. This bot is based off of the excellent brianwilliams.js bot by Tyler Shambora - thank you for your code!!
