@@ -1,10 +1,10 @@
-# brianwilliams.js
+# chainbot.js
 
 <p align="center">
-  <img width="100%" src="http://media3.s-nbcnews.com/i/newscms/2014_16/323536/140414-nn-bwnashville-1_2179035f104bd51be370fbe3c403ce6f.jpg" />
+  <img width="100%" src="https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png" />
 </p>
 
->brianwilliams is a slackbot who turns Slack channels of your designation into read only channels. This bot is great for things posting team updates to a channel, while ensuring that the posts don't get drowned out by ambient channel noise.
+>chainbot is a slackbot who watches over the ChainCoin slack channel while we sleep. For now, it can turn certain Slack channels into read only channels by deleting all messages that are posted to that channel. In the future, we will add support for vote banning, moderator banning, and also allow the bot to answer questions. This bot is based off of the excellent brianwilliams.js bot by Tyler Shambora - thank you for your code!!
 
 ## Getting Started
 
@@ -22,8 +22,10 @@ BOT_TOKEN
 CLIENT_ID
 CLIENT_SECRET
 MEGA_TOKEN
+HEROKU_URL
 READ_ONLY_CHANNELS
-WHITELIST_USERS
+ANNOUNCER_USERS
+MODERATOR_USERS
 ```
 
 where:
@@ -31,10 +33,14 @@ where:
 - `CLIENT_ID` is the client id from your Slack app
 - `CLIENT_SECRET` is the client secret from your Slack app
 - `MEGA_TOKEN` is the admin/god token of an admin user in Slack
+- `HEROKU_URL` is the full URL of your heroku app, to enable the keepalive feature which prevents the heroku app from sleeping after prolonged inactivity
 - `READ_ONLY_CHANNELS` are the channel ids of channels you want the bot to keep as read-only (separated by commas)
-- `WHITELIST_USERS` is the downcased first and last name ("first last", no quotes) of users that can post through the bot to the read only channels (separated by commas)
+- `ANNOUNCER_USERS` is a list of user ids that can post through the bot to the read only channels (separated by commas)
+- `MODERATOR_USERS` is a list of user ids that are allowed to use the moderation features (separated by commas)
 
-Once you've finished all the prior steps and deployed your bot to your Heroku server, visit http://[YOUR HEROKU APP URL].com/login to authenticate your bot. Once you've completed the authentication process, the bot should be a part of your team. Add people to your whitelist who are allowed to talk to the bot and channels that you'd like to make read only.
+To get the ids of the channels and users you can use the slack api with your token and a tool such as https://www.hurl.it/
+
+Once you've finished all the prior steps and deployed your bot to your Heroku server, visit https://[YOUR HEROKU APP URL].com/login to authenticate your bot. Once you've completed the authentication process, the bot should be a part of your team. Add people to the appropriate whitelists and also channels that you'd like to make read only.
 
 ## Example Message
 
@@ -50,24 +56,25 @@ ___
 for example:
 
 ```
-post to dev-updates
-test/ directories comin’ atcha1
+post to development-
+Warning of the Day
 ___
-yo, be on the lookout for a `test/` directory starting to make it’s way into your project roots. Don’t be alarmed, it’s supposed to be there, just don’t touch or delete it or else I’ll be rly rly mad. Also, it should be ignored by git, so if you see it making its way into your commits, *DON’T COMMIT IT*. In the very near future you’ll be getting more info on wha this directory is and what it does. Stay turned for more details.
+No matter what, do not create angry monkeys. Stay turned for more details.
 ```
 
 You can use message formatting in the post message, and if you want create a post with two separate title/message combos, separate them with three line breaks like so:
 
 ```
-post to dev-updates
+post to news
 Message Title One
 ___
-Message body one
+Message Body One
+
 
 
 Message Title Two
 ___
-Message body two
+Message Body Two
 ```
 
 ## Built With
@@ -77,6 +84,7 @@ Message body two
 
 ## Authors
 
+* **Alan Rudolf** - [@suprnurd](https://github.com/alanrudolf)
 * **Tyler Shambora** - [tshamz](https://github.com/tshamz)
 
 ## License
