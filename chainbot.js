@@ -1,12 +1,11 @@
 // Config ===============================================
 
+var config               = require('dotenv').config();
+
 var Q                    = require('q');
 var moment               = require('moment');
 var Botkit               = require('botkit');
 var responses            = require('./responses.js');
-var http                 = require("http");
-
-var herokuUrl            = process.env.HEROKU_URL;
 
 var moderatorWhiteList   = process.env.MODERATOR_USERS.split(',');
 var announcerWhiteList   = process.env.ANNOUNCER_USERS.split(',');
@@ -21,10 +20,6 @@ if (!process.env.BOT_TOKEN) {
   console.log('Error: Specify token in environment');
   process.exit(1);
 }
-
-var keepAlive = setInterval(function() {
-    http.get(herokuUrl);
-}, 900000); // every 15 minutes
 
 var controller = Botkit.slackbot({
   debug: true,

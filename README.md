@@ -19,10 +19,10 @@
 
 ```
 BOT_TOKEN
+PORT
 CLIENT_ID
 CLIENT_SECRET
 MEGA_TOKEN
-HEROKU_URL
 READ_ONLY_CHANNELS
 ANNOUNCER_USERS
 MODERATOR_USERS
@@ -30,10 +30,10 @@ MODERATOR_USERS
 
 where:
 - `BOT_TOKEN` is the bot's token from your Slack app
+- `PORT` is the port the bot api will bind to (set this to 80 for default behaviour)
 - `CLIENT_ID` is the client id from your Slack app
 - `CLIENT_SECRET` is the client secret from your Slack app
 - `MEGA_TOKEN` is the admin/god token of an admin user in Slack
-- `HEROKU_URL` is the full URL of your heroku app, to enable the keepalive feature which prevents the heroku app from sleeping after prolonged inactivity
 - `READ_ONLY_CHANNELS` are the channel ids of channels you want the bot to keep as read-only (separated by commas)
 - `ANNOUNCER_USERS` is a list of user ids that can post through the bot to the read only channels (separated by commas)
 - `MODERATOR_USERS` is a list of user ids that are allowed to use the moderation features (separated by commas)
@@ -41,6 +41,8 @@ where:
 To get the ids of the channels and users you can use the slack api with your token and a tool such as https://www.hurl.it/
 
 Once you've finished all the prior steps and deployed your bot to your Heroku server, visit https://[YOUR HEROKU APP URL].com/login to authenticate your bot. Once you've completed the authentication process, the bot should be a part of your team. Add people to the appropriate whitelists and also channels that you'd like to make read only.
+
+Alternatively, you can use a local node.js server to host the bot. I have done this successfully using the dotenv module (https://github.com/motdotla/dotenv)
 
 ## Example Message
 
