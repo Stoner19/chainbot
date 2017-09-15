@@ -182,7 +182,7 @@ controller.hears([/post to (\S+)\n([\s\S]*)/], 'direct_message', function(bot, m
         convo.say({
           slackUsername: 'ChainBot: Dev Team Announcer',
           icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
-          text: '*Posted by:* <@' + slackUserID + '|' + slackUserName + '> *on* ' + theDate + '\n<!channel>',
+          text: '*Posted by:* ' + slackUserID + ' *on* ' + theDate + '\n<!channel>',
           attachments: parsedMessages
 
         });

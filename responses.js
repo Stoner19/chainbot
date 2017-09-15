@@ -25,7 +25,7 @@ module.exports = {
             channel: '#' + options.channel,
             username: 'ChainCoin Announcement',
             icon_url: 'https://toaster.chaincoin.org/img/icons/chainbot/ChainBot.png',
-            text: '*Posted by:* <@' + options.id + '|' + options.user + '> *on* ' + options.date + '\n<!channel>',
+            text: '*Posted by:* ' + options.id + ' *on* ' + options.date + '\n<!channel>',
             attachments: options.message,
           });
         } else if (action === 'delete') {
