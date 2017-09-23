@@ -24,8 +24,12 @@ CLIENT_ID
 CLIENT_SECRET
 MEGA_TOKEN
 READ_ONLY_CHANNELS
+LISTEN_CHANNELS
 ANNOUNCER_USERS
 MODERATOR_USERS
+UPDATE_USERS
+HAPPY_REACTIONS
+ANGRY_REACTIONS
 ```
 
 where:
@@ -35,14 +39,19 @@ where:
 - `CLIENT_SECRET` is the client secret from your Slack app
 - `MEGA_TOKEN` is the admin/god token of an admin user in Slack
 - `READ_ONLY_CHANNELS` are the channel ids of channels you want the bot to keep as read-only (separated by commas)
+- `LISTEN_CHANNELS` are the channel ids of channels you want the bot to listen to (separated by commas)
 - `ANNOUNCER_USERS` is a list of user ids that can post through the bot to the read only channels (separated by commas)
 - `MODERATOR_USERS` is a list of user ids that are allowed to use the moderation features (separated by commas)
+- `UPDATE_USERS` is a list of user ids that are allowed to use the update features (separated by commas)
+- `HAPPY_REACTIONS` is a list of emojis the bot will use when reacting in a happy manner (separated by commas)
+- `ANGRY_REACTIONS` is a list of emojis the bot will use when reacting in an angry manner (separated by commas)
 
 To get the ids of the channels and users you can use the slack api with your token and a tool such as https://www.hurl.it/
 
 Once you've finished all the prior steps and deployed your bot to your Heroku server, visit https://[YOUR HEROKU APP URL].com/login to authenticate your bot. Once you've completed the authentication process, the bot should be a part of your team. Add people to the appropriate whitelists and also channels that you'd like to make read only.
 
-Alternatively, you can use a local node.js server to host the bot. I have done this successfully using the dotenv module (https://github.com/motdotla/dotenv)
+Alternatively, you can use a local node.js server to host the bot. One way of doing this is to use the dotenv module (https://github.com/motdotla/dotenv) to prepare the environment with the needed variables above. An example template.env has been included for this purpose.
+
 
 ## Example Message
 

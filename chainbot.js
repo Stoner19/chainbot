@@ -9,10 +9,14 @@ var responses            = require('./responses.js');
 
 var moderatorWhiteList   = process.env.MODERATOR_USERS.split(',');
 var announcerWhiteList   = process.env.ANNOUNCER_USERS.split(',');
-var fullWhiteList        = moderatorWhiteList.concat(announcerWhiteList); //meh
+var updateWhiteList      = process.env.UPDATE_USERS.split(',');
+var fullWhiteList        = updateWhiteList.concat(announcerWhiteList,moderatorWhiteList); //meh
 
-var readOnlyChannels     = process.env.READ_ONLY_CHANNELS.split(',');
+var readOnlyChannels      = process.env.READ_ONLY_CHANNELS.split(',');
+var listenChannels        = process.env.LISTEN_CHANNELS.split(',');
 
+var randomHappyEmojiReactions = process.env.HAPPY_REACTIONS.split(',');
+var randomAngryEmojiReactions = process.env.ANGRY_REACTIONS.split(',');
 
 // Init ===============================================
 
@@ -272,7 +276,86 @@ controller.hears([/delete (\S+) from (\S+)/], ['direct_message'], function(bot, 
   });
 });*/
 
+controller.hears(['update'], ['ambient'], function(bot, message) {
+  if (listenChannels.indexOf(message.channel) !== -1) { //only be useful in specified channels
+    getSlackUserNameFromId(bot, message.user).then(function(userName) {
+      bot.startConversation(message, function(err, convo) {
+        convo.say('To hear about the latest Chaincoin updates, just @mention me in your question.');
+      });
+    });
 
+  }
+});
+
+controller.hears(['update'], ['direct_mention', 'mention'], function(bot, message) {
+  if (listenChannels.indexOf(message.channel) !== -1) { //only be useful in specified channels
+    getSlackUserNameFromId(bot, message.user).then(function(userName) {
+      bot.startConversation(message, function(err, convo) {
+        convo.say('Thanks for asking about the latest Chaincoin updates *' + userName + '*.');
+        convo.say('Unfortunately I\'ve only been programmed to spit out this message for now, but soon the various dev team members will be able to post their updates to me and I\'ll remember them so I can repeat them back to people like you who ask for updates!');
+        convo.say('Have a nice day!');
+      });
+    });
+
+  }
+});
+
+controller.hears(['thank'], ['direct_mention', 'mention'], function(bot, message) {
+  if (listenChannels.indexOf(message.channel) !== -1) { //only be useful in specified channels
+    getSlackUserNameFromId(bot, message.user).then(function(userName) {
+      bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'chaincoin',
+      }, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          bot.reply(message, 'You\'re welcome, *' + userName + '*.');
+        }
+      });
+      bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'thumbsup',
+      }, function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+
+  }
+});
+
+controller.hears(['hi', 'hello', 'greeting'], ['direct_mention', 'mention'], function(bot, message) {
+  if (listenChannels.indexOf(message.channel) !== -1) { //only be useful in specified channels
+    getSlackUserNameFromId(bot, message.user).then(function(userName) {
+      bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'wave',
+      }, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          bot.reply(message, 'Hello *' + userName + '*! :sunglasses:');
+        }
+      });      
+    });
+
+  }
+});
+
+controller.hears(['chainbot'], ['ambient'], function(bot, message) {
+  bot.api.reactions.add({
+    timestamp: message.ts,
+    channel: message.channel,
+    name: 'chaincoin',
+  });
+});
+
+//keep readOnlyChannels clear by deleting all messages
 controller.hears([/[\s\S]*/], ['direct_message', 'direct_mention', 'mention', 'ambient', 'user_channel_join'], function(bot, message) {
   //can also add 'channel_leave' to remove messages when users leave channel
   if (readOnlyChannels.indexOf(message.channel) !== -1) {
