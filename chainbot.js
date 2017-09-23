@@ -221,7 +221,11 @@ controller.hears(['help'], ['direct_message'], function(bot, message) {
     });
 });*/
 
+/*
 controller.hears([/delete (\S+) from (\S+)/], ['direct_message'], function(bot, message) {
+
+  //TODO: this function should check the moderator list before running
+
   var channelOptions = {
     token: bot.config.token,
     channel: message.match[2],
@@ -252,7 +256,7 @@ controller.hears([/delete (\S+) from (\S+)/], ['direct_message'], function(bot, 
       });
     }
   });
-});
+});*/
 
 /*controller.on('direct_message, mention, direct_mention', function(bot, message) {
   bot.api.reactions.add({
